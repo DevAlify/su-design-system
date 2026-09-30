@@ -1,0 +1,95 @@
+/*
+  tokens.css — Sypher Way & Umbra Ltda.
+  Design tokens do backoffice Umbra, estado atual (extraídos de
+  backoffice/src/app/ui.css e backoffice/DESIGN.md).
+
+  Como usar
+  ---------
+  1. Carregue este arquivo antes do seu CSS de componentes:
+       <link rel="stylesheet" href="tokens.css">
+  2. Consuma os tokens por var(), nunca copie o valor hexadecimal:
+       .meu-botao{ background:var(--text); color:var(--ink-inv); }
+  3. Os nomes de cor (--bg, --text, --line...) são os mesmos usados em
+     produção no backoffice — isso é proposital, para que este arquivo
+     possa substituir um bloco :root equivalente sem quebrar nada.
+
+  Temas
+  -----
+  - "Escuro" é o padrão do sistema: os valores em :root já são o tema
+    escuro, sem precisar de nenhum atributo.
+  - <html data-theme="dark">  força escuro (mesmo com o SO em modo claro).
+  - <html data-theme="light"> força claro.
+  - "Sistema" = não escrever data-theme nenhum. Nesse caso o bloco
+    @media (prefers-color-scheme: light) abaixo assume quando o SO
+    estiver em modo claro; em modo escuro (ou sem preferência), os
+    valores de :root (escuro) continuam valendo. É exatamente a lógica
+    do backoffice, reaproveitada aqui token por token.
+
+  Cor é a única categoria com custom properties em produção. Tipografia,
+  espaçamento, raio e sombra existem em ui.css como valores fixos nas
+  regras (ex.: `border-radius:12px`) e na tabela do DESIGN.md, não como
+  var() — os tokens abaixo para essas categorias foram extraídos dali e
+  nomeados aqui pela primeira vez como custom properties.
+*/
+
+:root{
+  /* Cor — copiado 1:1 de ui.css */
+  --bg:#0d0d0f; --panel:#111114; --surface:#151518; --raised:#1c1c20; --hover:#1f1f24;
+  --line:#26262b; --line-strong:#3a3a41;
+  --text:#ebe7df; --muted:#a19c93; --faint:#8f8a80; --ink-inv:#0d0d0f;
+  --ok:#74c493; --ok-bg:#12241a; --warn:#e3b566; --warn-bg:#2a2112; --bad:#ec7f68; --bad-bg:#2c1612;
+  --focus:#ebe7df;
+
+  /* Tipografia — famílias como no protótipo standalone (sem next/font) */
+  --sans:"Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"Geist Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+
+  /* Tipografia — escala (DESIGN.md → typography.*) */
+  --text-display-size:30px;   --text-display-weight:500; --text-display-line:1.1;  --text-display-tracking:-0.03em;  --text-display-family:var(--mono);
+  --text-headline-size:22px;  --text-headline-weight:600; --text-headline-line:1.25; --text-headline-tracking:-0.015em; --text-headline-family:var(--sans);
+  --text-title-size:15px;     --text-title-weight:600;   --text-title-line:1.4;   --text-title-tracking:-0.015em; --text-title-family:var(--sans);
+  --text-title-sm-size:13.5px;
+  --text-body-size:14px;      --text-body-weight:400;    --text-body-line:1.5;    --text-body-family:var(--sans);
+  --text-label-size:12.5px;   --text-label-weight:500;   --text-label-line:1.4;   --text-label-family:var(--sans);
+  --text-figure-size:13px;    --text-figure-weight:400;  --text-figure-line:1.5;  --text-figure-tracking:-0.01em; --text-figure-family:var(--mono);
+
+  /* Espaçamento — ritmo de 4px (DESIGN.md → spacing.*) */
+  --space-xs:4px; --space-sm:8px; --space-md:12px; --space-lg:16px; --space-xl:24px; --space-2xl:32px;
+
+  /* Raio — escala curta (DESIGN.md → rounded.*) */
+  --radius-xs:4px; --radius-sm:6px; --radius-md:8px; --radius-callout:10px; --radius-lg:12px; --radius-pill:999px;
+
+  /* Sombra — só existe em overlays (ver Elevation & Depth no DESIGN.md);
+     nenhum cartão, painel ou botão usa sombra de elevação. */
+  --shadow-focus:0 0 0 3px color-mix(in srgb, var(--text) 14%, transparent);
+  --shadow-focus-error:0 0 0 3px var(--bad-bg);
+  --shadow-popover:0 18px 40px rgba(0,0,0,.35);
+  --shadow-palette:0 30px 60px rgba(0,0,0,.45);
+  --shadow-drawer:12px 0 32px rgba(0,0,0,.35);
+  --scrim:rgba(5,5,6,.55);
+
+  color-scheme: dark;
+}
+
+[data-theme="light"]{
+  --bg:#f4f2ed; --panel:#ebe8e1; --surface:#fbfaf7; --raised:#f1eee8; --hover:#e6e2da;
+  --line:#dbd6cc; --line-strong:#bdb7ab;
+  --text:#16161a; --muted:#57534c; --faint:#67625a; --ink-inv:#f4f2ed;
+  --ok:#1d7446; --ok-bg:#e0efe5; --warn:#8a5700; --warn-bg:#f5e9d2; --bad:#ad3a22; --bad-bg:#f6e0da;
+  --focus:#16161a;
+  color-scheme: light;
+}
+
+/* Tema "Sistema": sem data-theme, segue o SO. Escuro já é o valor de
+   :root, então só precisamos sobrescrever quando o SO pedir claro e
+   ninguém tiver forçado data-theme="dark". */
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#f4f2ed; --panel:#ebe8e1; --surface:#fbfaf7; --raised:#f1eee8; --hover:#e6e2da;
+    --line:#dbd6cc; --line-strong:#bdb7ab;
+    --text:#16161a; --muted:#57534c; --faint:#67625a; --ink-inv:#f4f2ed;
+    --ok:#1d7446; --ok-bg:#e0efe5; --warn:#8a5700; --warn-bg:#f5e9d2; --bad:#ad3a22; --bad-bg:#f6e0da;
+    --focus:#16161a;
+    color-scheme: light;
+  }
+}

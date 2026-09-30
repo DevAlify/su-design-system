@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Umbra — Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="tokens.css">
+<style>
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:var(--text-body-weight) var(--text-body-size)/var(--text-body-line) var(--sans);-webkit-font-smoothing:antialiased}
+::selection{background:var(--text);color:var(--ink-inv)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:var(--radius-sm)}
+*{scrollbar-width:thin;scrollbar-color:var(--line-strong) transparent}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.015em}
+p{margin:0}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.sr{position:absolute;left:-9999px}
+
+/* ---- shell da página de docs ---- */
+.top{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center;justify-content:space-between;padding:16px 32px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .id{display:flex;align-items:center;gap:10px}
+.top .mark{width:20px;height:20px;border-radius:50%;background:radial-gradient(circle at 70% 30%,var(--text) 0 35%,transparent 36%),var(--line-strong);flex:none}
+.top b{font-weight:600;letter-spacing:-.01em}
+.top .status{color:var(--faint);font-size:12.5px}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 32px 80px}
+.rebrand{max-width:1180px;margin:0 auto;padding:10px 32px 0;color:var(--faint);font-size:12.5px}
+.rebrand .example{margin-right:6px}
+
+.doc-view{display:grid;grid-template-columns:200px minmax(0,1fr);gap:32px;align-items:start}
+.doc-view>main{min-width:0}
+.doc-toc{position:sticky;top:72px;display:grid;gap:6px;font-size:12.5px;padding-bottom:24px}
+.doc-toc a{color:var(--muted);text-decoration:none;padding:3px 0}
+.doc-toc a:hover{color:var(--text)}
+@media (max-width:860px){.doc-view{grid-template-columns:minmax(0,1fr)}.doc-toc{position:static;display:flex;flex-wrap:wrap;gap:4px 14px;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:8px}}
+
+section.sec{padding:40px 0;border-top:1px solid var(--line)}
+section.sec:first-child{border-top:0;padding-top:0}
+section.sec h2{font-size:var(--text-headline-size);letter-spacing:var(--text-headline-tracking)}
+section.sec .lede{color:var(--muted);margin-top:6px;max-width:64ch;line-height:1.6}
+.example{font-size:11.5px;color:var(--faint);border:1px dashed var(--line-strong);border-radius:var(--radius-xs);padding:1px 6px}
+
+.rules{display:flex;flex-direction:column;gap:14px;margin-top:20px}
+.rule{padding:14px 16px;border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface)}
+.rule b{display:block;margin-bottom:4px}
+.rule p{color:var(--muted);font-size:13.5px;line-height:1.6}
+.charlist{display:flex;flex-direction:column;gap:8px;margin-top:16px;padding-left:18px;color:var(--muted);font-size:13.5px;line-height:1.6}
+
+/* swatches */
+.swrow{margin-top:22px}
+.swrow h3{font-size:var(--text-title-sm-size);color:var(--muted);font-weight:500;margin-bottom:10px}
+.swgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.sw{border:1px solid var(--line);border-radius:var(--radius-md);overflow:hidden;background:var(--surface)}
+.sw i{display:block;height:52px;border-bottom:1px solid var(--line)}
+.sw div{padding:8px 10px}
+.sw b{display:block;font-size:12.5px}
+.sw span{display:block;color:var(--faint);font-size:11.5px;margin-top:2px}
+.stategrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:12px}
+.statecard{border:1px solid var(--line);border-radius:var(--radius-lg);padding:14px 16px}
+.statecard .state{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;margin-bottom:8px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot.ok{background:var(--ok)} .dot.warn{background:var(--warn)} .dot.bad{background:var(--bad)} .dot.off{background:var(--faint)}
+.statecard .pair{display:flex;gap:8px}
+.statecard .pair i{flex:1;height:34px;border-radius:var(--radius-sm);border:1px solid var(--line)}
+.statecard .hex{margin-top:8px;color:var(--faint);font-size:11.5px}
+
+/* type */
+.typescale{display:flex;flex-direction:column;gap:18px;margin-top:20px}
+.typerow{display:grid;grid-template-columns:110px minmax(0,1fr);gap:20px;align-items:baseline;padding:14px 0;border-bottom:1px solid var(--line)}
+.typerow:last-child{border-bottom:0}
+.typerow .meta{color:var(--faint);font-size:12px}
+.typerow .meta b{display:block;color:var(--muted);font-size:12.5px;font-weight:500;margin-bottom:2px}
+.t-display{font-family:var(--text-display-family);font-size:var(--text-display-size);font-weight:var(--text-display-weight);line-height:var(--text-display-line);letter-spacing:var(--text-display-tracking)}
+.t-headline{font-family:var(--text-headline-family);font-size:var(--text-headline-size);font-weight:var(--text-headline-weight);line-height:var(--text-headline-line);letter-spacing:var(--text-headline-tracking)}
+.t-title{font-family:var(--text-title-family);font-size:var(--text-title-size);font-weight:var(--text-title-weight);line-height:var(--text-title-line);letter-spacing:var(--text-title-tracking)}
+.t-body{font-family:var(--text-body-family);font-size:var(--text-body-size);font-weight:var(--text-body-weight);line-height:var(--text-body-line)}
+.t-label{font-family:var(--text-label-family);font-size:var(--text-label-size);font-weight:var(--text-label-weight);line-height:var(--text-label-line)}
+.t-figure{font-family:var(--text-figure-family);font-size:var(--text-figure-size);font-weight:var(--text-figure-weight);line-height:var(--text-figure-line);letter-spacing:var(--text-figure-tracking);font-variant-numeric:tabular-nums}
+
+/* spacing / radius / shadow */
+.foundgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;margin-top:20px}
+.found h3{font-size:var(--text-title-sm-size);color:var(--muted);font-weight:500;margin-bottom:12px}
+.spacebars{display:flex;flex-direction:column;gap:8px}
+.spacebar{display:grid;grid-template-columns:56px 1fr 48px;align-items:center;gap:10px;font-size:12px;color:var(--muted)}
+.spacebar i{display:block;height:10px;background:var(--text);border-radius:2px}
+.radiusrow{display:flex;flex-wrap:wrap;gap:12px}
+.radiusbox{width:64px;height:64px;background:var(--surface);border:1px solid var(--line-strong);display:grid;place-items:center;color:var(--faint);font-size:11px}
+.shadowrow{display:grid;gap:12px}
+.shadowcard{padding:16px;border-radius:var(--radius-lg);background:var(--panel);font-size:12.5px;color:var(--muted)}
+.shadowcard b{display:block;color:var(--text);font-size:13px;margin-bottom:4px}
+.sh-popover{box-shadow:var(--shadow-popover)}
+.sh-palette{box-shadow:var(--shadow-palette)}
+.sh-drawer{box-shadow:var(--shadow-drawer)}
+
+/* components showcase */
+.showcase{margin-top:20px;display:flex;flex-direction:column;gap:28px}
+.demo{border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface)}
+.demo-h{padding:10px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.demo-h b{font-size:13px}
+.demo-h code{font-family:var(--mono);font-size:11.5px;color:var(--faint)}
+.demo-b{padding:20px 16px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.demo-b.col{flex-direction:column;align-items:stretch}
+
+/* ---- classes reais de produção (ui.css), reaproveitadas 1:1 ---- */
+.btn{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;border-radius:8px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font:500 13.5px var(--sans);cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:hover{background:var(--hover)}
+.btn.primary{background:var(--text);color:var(--ink-inv);border-color:var(--text)}
+.btn.primary:hover{opacity:.9}
+.btn.danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}
+.btn.danger:hover{background:var(--bad-bg)}
+.btn.sm{height:30px;padding:0 10px;font-size:13px}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--muted)}
+.btn.ghost:hover{background:var(--hover);color:var(--text)}
+.icon-btn{all:unset;cursor:pointer;position:relative;display:grid;place-items:center;width:34px;height:34px;border-radius:8px;color:var(--muted)}
+.icon-btn:hover{background:var(--hover);color:var(--text)}
+.icon-btn:focus-visible{outline:2px solid var(--focus)}
+
+.field{display:flex;flex-direction:column;gap:6px;max-width:320px}
+.field label,.lbl{font-size:12.5px;color:var(--muted);font-weight:500;display:flex;align-items:center;gap:6px}
+.field .hint{font-size:12px;color:var(--faint)}
+.field .err{font-size:12.5px;color:var(--bad);display:flex;gap:6px;align-items:center}
+input,select,textarea{font:14px var(--sans);color:var(--text);background:var(--bg);border:1px solid var(--line-strong);border-radius:8px;height:36px;padding:0 11px;width:100%}
+input::placeholder{color:var(--faint)}
+input:focus{outline:none;border-color:var(--text);box-shadow:0 0 0 3px color-mix(in srgb,var(--text) 14%,transparent)}
+input.invalid{border-color:var(--bad);box-shadow:0 0 0 3px var(--bad-bg)}
+
+.chip{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 8px;border-radius:999px;border:1px solid var(--line-strong);font-size:12px;color:var(--muted);white-space:nowrap}
+.chip.solid{background:var(--text);color:var(--ink-inv);border-color:var(--text)}
+.chip.tag{border-style:dashed}
+.fchip{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:999px;border:1px dashed var(--line-strong);color:var(--muted);font-size:12.5px}
+.fchip[aria-pressed="true"]{border-style:solid;border-color:var(--text);color:var(--text)}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;white-space:nowrap}
+.st::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--faint)}
+.st.lead::before{background:var(--muted)}
+.st.cliente::before{background:var(--text)}
+.st.ex::before{background:var(--line-strong)}
+.state{display:inline-flex;align-items:center;gap:7px}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.panel-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.panel-b{padding:16px 18px}
+
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);padding:0 4px;overflow-x:auto}
+.tabs a,.tabs span{display:inline-flex;align-items:center;gap:8px;padding:12px 10px;text-decoration:none;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;font-size:13.5px}
+.tabs a:hover{color:var(--text)}
+.tabs a[aria-current="page"]{color:var(--text);border-bottom-color:var(--text);font-weight:500}
+.tabs .n{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.tabs .off{opacity:.5;cursor:not-allowed}
+.tabs .off small{font-size:11.5px;color:var(--faint)}
+
+.menu-demo{display:flex;flex-direction:column;gap:1px;padding:6px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-md);width:220px}
+.menu-demo a{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:7px;text-decoration:none;color:var(--muted);font-size:13.5px}
+.menu-demo a:hover{background:var(--hover);color:var(--text)}
+.menu-demo a[aria-current="page"]{background:var(--raised);color:var(--text);box-shadow:inset 0 0 0 1px var(--line)}
+.menu-demo a.off{opacity:.55}
+.menu-demo a .soon{margin-left:auto;font-size:11.5px;color:var(--faint)}
+
+.avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--raised);border:1px solid var(--line-strong);font-size:12px;font-weight:600;flex:none}
+.avatar.lg{width:56px;height:56px;font-size:20px}
+
+table.data{width:100%;border-collapse:collapse}
+.data th{font-size:12px;font-weight:500;color:var(--faint);text-align:left;padding:10px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
+.data td{padding:11px 16px;border-bottom:1px solid var(--line);vertical-align:middle}
+.data tr:last-child td{border-bottom:0}
+.data tbody tr:hover td{background:var(--hover)}
+.data .name{font-weight:500}
+.data .sub{color:var(--faint);font-size:12.5px}
+.empty td{cursor:default;color:var(--muted);text-align:center;padding:32px 16px!important}
+.empty:hover td{background:transparent!important}
+.table-frame{border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden}
+
+.attn{display:flex;gap:10px;align-items:flex-start;padding:12px 16px;border-radius:10px;font-size:13.5px}
+.attn.ok{background:var(--ok-bg)} .attn.warn{background:var(--warn-bg)} .attn.bad{background:var(--bad-bg)}
+.attn .dot{margin-top:6px}
+.attn b{display:block}
+.attn p{color:var(--muted);margin-top:2px}
+.ic{width:16px;height:16px;flex:none;margin-top:1px}
+
+/* uso */
+pre.code{margin:0;padding:14px 16px;border:1px solid var(--line);border-radius:var(--radius-md);background:var(--raised);overflow-x:auto;font:12.5px/1.6 var(--mono);color:var(--text)}
+.dodont{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:16px}
+.dodont .col{border:1px solid var(--line);border-radius:var(--radius-lg);padding:14px 16px}
+.dodont .col b{display:block;margin-bottom:8px}
+.dodont ul{margin:0;padding-left:18px;color:var(--muted);font-size:13.5px;line-height:1.7}
+.dodont .do b{color:var(--ok)}
+.dodont .dont b{color:var(--bad)}
+
+/* theme toggle */
+.segctl{display:inline-flex;border:1px solid var(--line-strong);border-radius:8px;padding:3px;gap:3px;background:var(--bg)}
+.segctl label{position:relative;display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;cursor:pointer;color:var(--muted);font-size:13px}
+.segctl input{position:absolute;opacity:0;pointer-events:none}
+.segctl label:has(input:checked){background:var(--raised);color:var(--text);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.segctl label:has(input:focus-visible){outline:2px solid var(--focus)}
+
+footer{padding:24px 32px 40px;color:var(--faint);font-size:12px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="id"><span class="mark" aria-hidden="true"></span><b>Umbra</b><span class="status">design system · estado atual</span></div>
+  <div class="segctl" role="radiogroup" aria-label="Tema da página">
+    <label><input type="radio" name="ds-theme" value="light">Claro</label>
+    <label><input type="radio" name="ds-theme" value="dark" checked>Escuro</label>
+    <label><input type="radio" name="ds-theme" value="system">Sistema</label>
+  </div>
+</div>
+
+<p class="rebrand"><span class="example">nota</span> Esta página documenta o sistema como ele está em produção hoje no backoffice. Uma sessão futura vai reformulá-la para o rebrand SyphreX (Linear UMB-53).</p>
+
+<div class="wrap">
+<div class="doc-view">
+  <nav class="doc-toc" aria-label="Seções">
+    <a href="#principios">Princípios</a>
+    <a href="#cores">Cores</a>
+    <a href="#tipografia">Tipografia</a>
+    <a href="#fundamentos">Espaçamento, raio e sombra</a>
+    <a href="#componentes">Componentes</a>
+    <a href="#uso">Uso</a>
+  </nav>
+
+  <main>
+
+  <section class="sec" id="principios">
+    <h2>Princípios</h2>
+    <p class="lede">"O Painel de Bordo": o backoffice é um instrumento, não uma vitrine. A maior parte da interface fica neutra e só acende quando algo pede atenção.</p>
+    <div class="rules">
+      <div class="rule"><b>Cor só para estado</b><p>Fora de <span class="mono">state-ok</span> / <span class="mono">state-warn</span> / <span class="mono">state-bad</span>, nada usa cor de marca. O resto da interface vive na escala neutra quase-preto → osso.</p></div>
+      <div class="rule"><b>Cor nunca sozinha</b><p>Todo indicador de estado é um par: ponto colorido + rótulo em texto. Cor nunca é o único portador de significado (WCAG 2.1 AA).</p></div>
+      <div class="rule"><b>Mono só para figuras</b><p>Geist Mono nunca aparece em prosa, título ou rótulo — só em números, documentos e horários que precisam alinhar ou ser lidos com precisão.</p></div>
+      <div class="rule"><b>Plano por padrão</b><p>Painéis e cartões se separam por hairlines de 1px, nunca por sombra. Sombra existe só em três overlays: popover, paleta de comando e a gaveta de navegação no mobile.</p></div>
+    </div>
+    <ul class="charlist">
+      <li>Monocromático quase-preto → osso; cor só para estado (ok / atenção / crítico).</li>
+      <li>Geist para toda a interface; Geist Mono reservado a figuras tabulares.</li>
+      <li>Blocos ordenados por valor de negócio, não por grade decorativa.</li>
+      <li>Tema escuro é o padrão (<span class="mono">data-theme="dark"</span>); o tema claro é a mesma gramática invertida, não uma segunda identidade.</li>
+      <li>Módulo de fase futura fica visível e desabilitado (opacidade .55 + rótulo de fase), nunca escondido.</li>
+    </ul>
+  </section>
+
+  <section class="sec" id="cores">
+    <h2>Cores</h2>
+    <p class="lede">Uma única rampa neutra mais três cores de estado. Sem primária/secundária/terciária de marca.</p>
+
+    <div class="swrow">
+      <h3>Neutros — escuro (padrão)</h3>
+      <div class="swgrid">
+        <div class="sw"><i style="background:#0d0d0f"></i><div><b>near-black</b><span class="mono">--bg #0d0d0f</span></div></div>
+        <div class="sw"><i style="background:#111114"></i><div><b>panel-ink</b><span class="mono">--panel #111114</span></div></div>
+        <div class="sw"><i style="background:#151518"></i><div><b>card-surface</b><span class="mono">--surface #151518</span></div></div>
+        <div class="sw"><i style="background:#1c1c20"></i><div><b>raised-surface</b><span class="mono">--raised #1c1c20</span></div></div>
+        <div class="sw"><i style="background:#1f1f24"></i><div><b>hover-surface</b><span class="mono">--hover #1f1f24</span></div></div>
+        <div class="sw"><i style="background:#26262b"></i><div><b>hairline</b><span class="mono">--line #26262b</span></div></div>
+        <div class="sw"><i style="background:#3a3a41"></i><div><b>hairline-strong</b><span class="mono">--line-strong #3a3a41</span></div></div>
+        <div class="sw"><i style="background:#ebe7df"></i><div><b>bone</b><span class="mono">--text #ebe7df</span></div></div>
+        <div class="sw"><i style="background:#a19c93"></i><div><b>warm-gray</b><span class="mono">--muted #a19c93</span></div></div>
+        <div class="sw"><i style="background:#8f8a80"></i><div><b>faint-taupe</b><span class="mono">--faint #8f8a80</span></div></div>
+      </div>
+    </div>
+
+    <div class="swrow">
+      <h3>Neutros — claro</h3>
+      <div class="swgrid">
+        <div class="sw"><i style="background:#f4f2ed"></i><div><b>near-black</b><span class="mono">--bg #f4f2ed</span></div></div>
+        <div class="sw"><i style="background:#ebe8e1"></i><div><b>panel-ink</b><span class="mono">--panel #ebe8e1</span></div></div>
+        <div class="sw"><i style="background:#fbfaf7"></i><div><b>card-surface</b><span class="mono">--surface #fbfaf7</span></div></div>
+        <div class="sw"><i style="background:#f1eee8"></i><div><b>raised-surface</b><span class="mono">--raised #f1eee8</span></div></div>
+        <div class="sw"><i style="background:#e6e2da"></i><div><b>hover-surface</b><span class="mono">--hover #e6e2da</span></div></div>
+        <div class="sw"><i style="background:#dbd6cc"></i><div><b>hairline</b><span class="mono">--line #dbd6cc</span></div></div>
+        <div class="sw"><i style="background:#bdb7ab"></i><div><b>hairline-strong</b><span class="mono">--line-strong #bdb7ab</span></div></div>
+        <div class="sw"><i style="background:#16161a"></i><div><b>bone</b><span class="mono">--text #16161a</span></div></div>
+        <div class="sw"><i style="background:#57534c"></i><div><b>warm-gray</b><span class="mono">--muted #57534c</span></div></div>
+        <div class="sw"><i style="background:#67625a"></i><div><b>faint-taupe</b><span class="mono">--faint #67625a</span></div></div>
+      </div>
+    </div>
+
+    <div class="swrow">
+      <h3>Estado (não é paleta de marca)</h3>
+      <div class="stategrid">
+        <div class="statecard">
+          <span class="state"><span class="dot ok"></span>no ar · Ativo</span>
+          <div class="pair"><i style="background:#74c493"></i><i style="background:#12241a"></i></div>
+          <div class="hex">state-ok #74c493 / bg #12241a <span style="margin:0 4px">·</span> claro #1d7446 / bg #e0efe5</div>
+        </div>
+        <div class="statecard">
+          <span class="state"><span class="dot warn"></span>Esfriando · atenção</span>
+          <div class="pair"><i style="background:#e3b566"></i><i style="background:#2a2112"></i></div>
+          <div class="hex">state-warn #e3b566 / bg #2a2112 <span style="margin:0 4px">·</span> claro #8a5700 / bg #f5e9d2</div>
+        </div>
+        <div class="statecard">
+          <span class="state"><span class="dot bad"></span>Fora do ar · crítico</span>
+          <div class="pair"><i style="background:#ec7f68"></i><i style="background:#2c1612"></i></div>
+          <div class="hex">state-bad #ec7f68 / bg #2c1612 <span style="margin:0 4px">·</span> claro #ad3a22 / bg #f6e0da</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="tipografia">
+    <h2>Tipografia</h2>
+    <p class="lede">Geist para interface; Geist Mono só quando o número precisa ser lido com precisão.</p>
+    <div class="typescale">
+      <div class="typerow"><div class="meta"><b>Display</b>30px · 500 · Mono</div><div class="t-display">R$ 42.180</div></div>
+      <div class="typerow"><div class="meta"><b>Headline</b>22px · 600</div><div class="t-headline">Painel</div></div>
+      <div class="typerow"><div class="meta"><b>Title</b>15px · 600</div><div class="t-title">Receita</div></div>
+      <div class="typerow"><div class="meta"><b>Body</b>14px · 400</div><div class="t-body">Texto corrido, célula de tabela, descrição de campo.</div></div>
+      <div class="typerow"><div class="meta"><b>Label</b>12.5px · 500</div><div class="t-label">Rótulo de campo</div></div>
+      <div class="typerow"><div class="meta"><b>Figure</b>13px · 400 · Mono</div><div class="t-figure">12.ABC.345/01DE-35</div></div>
+    </div>
+  </section>
+
+  <section class="sec" id="fundamentos">
+    <h2>Espaçamento, raio e sombra</h2>
+    <div class="foundgrid">
+      <div class="found">
+        <h3>Espaçamento — ritmo de 4px</h3>
+        <div class="spacebars">
+          <div class="spacebar"><span>xs</span><i style="width:4px"></i><span class="mono">4px</span></div>
+          <div class="spacebar"><span>sm</span><i style="width:8px"></i><span class="mono">8px</span></div>
+          <div class="spacebar"><span>md</span><i style="width:12px"></i><span class="mono">12px</span></div>
+          <div class="spacebar"><span>lg</span><i style="width:16px"></i><span class="mono">16px</span></div>
+          <div class="spacebar"><span>xl</span><i style="width:24px"></i><span class="mono">24px</span></div>
+          <div class="spacebar"><span>2xl</span><i style="width:32px"></i><span class="mono">32px</span></div>
+        </div>
+      </div>
+      <div class="found">
+        <h3>Raio</h3>
+        <div class="radiusrow">
+          <div class="radiusbox" style="border-radius:4px">xs 4</div>
+          <div class="radiusbox" style="border-radius:6px">sm 6</div>
+          <div class="radiusbox" style="border-radius:8px">md 8</div>
+          <div class="radiusbox" style="border-radius:10px">callout 10</div>
+          <div class="radiusbox" style="border-radius:12px">lg 12</div>
+          <div class="radiusbox" style="border-radius:999px">pill</div>
+        </div>
+      </div>
+      <div class="found" style="grid-column:1/-1">
+        <h3>Sombra — só em overlays</h3>
+        <div class="shadowrow" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));display:grid">
+          <div class="shadowcard sh-popover"><b>Popover</b>0 18px 40px rgba(0,0,0,.35)</div>
+          <div class="shadowcard sh-palette"><b>Paleta de comando</b>0 30px 60px rgba(0,0,0,.45)</div>
+          <div class="shadowcard sh-drawer"><b>Gaveta mobile</b>12px 0 32px rgba(0,0,0,.35)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="componentes">
+    <h2>Componentes</h2>
+    <p class="lede">Exemplos vivos, com as classes reais de <span class="mono">ui.css</span>.</p>
+    <div class="showcase">
+
+      <div class="demo">
+        <div class="demo-h"><b>Botões</b><code>.btn .primary .danger .ghost .sm</code></div>
+        <div class="demo-b">
+          <button class="btn primary" type="button">Salvar conta</button>
+          <button class="btn" type="button">Cancelar</button>
+          <button class="btn danger" type="button">Excluir</button>
+          <button class="btn ghost" type="button">Ghost</button>
+          <button class="btn sm" type="button">Pequeno</button>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-h"><b>Campo com erro</b><code>.field .err</code></div>
+        <div class="demo-b col">
+          <div class="field">
+            <label for="fx-doc">CNPJ</label>
+            <input id="fx-doc" class="invalid" value="12.ABC.345" aria-invalid="true" aria-describedby="fx-doc-err">
+            <span class="err" id="fx-doc-err">Documento inválido. Confira os dígitos.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-h"><b>Chip / status</b><code>.chip .chip.solid .chip.tag .st .dot</code></div>
+        <div class="demo-b">
+          <span class="chip">Setembro</span>
+          <span class="chip solid">Sócio</span>
+          <span class="chip tag">arquitetura</span>
+          <span class="st lead">Lead</span>
+          <span class="st cliente">Cliente</span>
+          <span class="st ex">Ex-cliente</span>
+          <span class="state"><span class="dot ok"></span>no ar</span>
+          <span class="state"><span class="dot bad"></span>fora do ar</span>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-h"><b>Painel</b><code>.panel .panel-h .panel-b</code></div>
+        <div class="demo-b col">
+          <section class="panel" style="max-width:360px">
+            <div class="panel-h"><h2>Receita</h2><span class="chip">Setembro</span></div>
+            <div class="panel-b"><div class="mono" style="font-size:22px">R$ 42.180</div></div>
+          </section>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-h"><b>Abas</b><code>.tabs .n .off</code></div>
+        <div class="demo-b col" style="padding:0">
+          <nav class="tabs" aria-label="Exemplo">
+            <a href="#componentes" aria-current="page">Leads <span class="n">8</span></a>
+            <a href="#componentes">Clientes <span class="n">4</span></a>
+            <span class="off">Financeiro <small>F3</small></span>
+          </nav>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-h"><b>Item de navegação</b><code>.menu a[aria-current] .off</code></div>
+        <div class="demo-b">
+          <nav class="menu-demo" aria-label="Exemplo">
+            <a href="#componentes">Painel</a>
+            <a href="#componentes" aria-current="page">Clientes</a>
+            <a class="off" aria-disabled="true">Financeiro<span class="soon">F3</span></a>
+          </nav>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-h"><b>Avatar</b><code>.avatar .avatar.lg</code></div>
+        <div class="demo-b">
+          <span class="avatar">A</span>
+          <span class="avatar lg">LG</span>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-h"><b>Tabela e estado vazio</b><code>table.data .empty</code></div>
+        <div class="demo-b col" style="padding:0">
+          <div class="table-frame">
+            <table class="data">
+              <thead><tr><th>Nome</th><th>Status</th><th>Dono</th></tr></thead>
+              <tbody>
+                <tr><td><div class="name">Ateliê Lume Arquitetura</div><div class="sub">Indicação</div></td><td><span class="st lead">Lead</span></td><td>Luis Gustavo</td></tr>
+                <tr class="empty"><td colspan="3">Nenhum cliente com esse filtro. Limpe a busca ou os filtros, ou cadastre um novo cliente.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="demo-h"><b>Alerta</b><code>.attn .ok .warn .bad</code></div>
+        <div class="demo-b col">
+          <div class="attn ok"><span class="dot ok"></span><div><b>Site no ar</b><p>umbraa.dev respondeu em 225 ms.</p></div></div>
+          <div class="attn warn"><span class="dot warn"></span><div><b>Fatura perto do vencimento</b><p>Vence em 3 dias.</p></div></div>
+          <div class="attn bad"><span class="dot bad"></span><div><b>Site fora do ar</b><p>sypherway.com.br não responde há 4 minutos.</p></div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sec" id="uso">
+    <h2>Uso</h2>
+    <p class="lede">Carregue <span class="mono">tokens.css</span> antes do seu próprio CSS e consuma os tokens por <span class="mono">var()</span>.</p>
+    <pre class="code">&lt;link rel="stylesheet" href="tokens.css"&gt;
+&lt;style&gt;
+  .meu-botao{ background:var(--text); color:var(--ink-inv); border-radius:var(--radius-md); }
+&lt;/style&gt;</pre>
+
+    <div class="dodont">
+      <div class="col do"><b>Do</b>
+        <ul>
+          <li>Manter cor reservada para estado; o resto fica na escala neutra.</li>
+          <li>Acompanhar todo ponto de estado com um rótulo em texto.</li>
+          <li>Usar Geist Mono só para figuras — dinheiro, percentual, contagem, horário, documento.</li>
+          <li>Manter divisores como hairlines de 1px; sem sombra decorativa em cartão ou painel.</li>
+          <li>Mostrar módulo de fase futura como visível e desabilitado, nunca escondido.</li>
+        </ul>
+      </div>
+      <div class="col dont"><b>Don't</b>
+        <ul>
+          <li>Introduzir cor de acento de marca fora dos três estados semânticos.</li>
+          <li>Usar sombra de elevação em cartão, painel ou botão fora dos overlays.</li>
+          <li>Usar Geist Mono em prosa, título ou rótulo.</li>
+          <li>Mostrar cartões de KPI idênticos com sparkline decorativa.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  </main>
+</div>
+</div>
+
+<footer>Sypher Way &amp; Umbra Ltda. · fonte: backoffice/DESIGN.md e backoffice/src/app/ui.css · repositório <span class="mono">DevAlify/su-design-system</span></footer>
+
+<script>
+(function(){
+  var radios = document.querySelectorAll('input[name="ds-theme"]');
+  for (var i = 0; i < radios.length; i++){
+    radios[i].addEventListener('change', function(e){
+      var v = e.target.value;
+      if (v === 'system') document.documentElement.removeAttribute('data-theme');
+      else document.documentElement.setAttribute('data-theme', v);
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
